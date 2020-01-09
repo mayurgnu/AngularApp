@@ -1,0 +1,16 @@
+<h2>Role</h2>
+<hr>
+<table datatable [dtOptions]="dtOptions" class="row-border hover">
+    <thead>
+      <tr>
+          <th>RoleName</th>
+          <th>Active/InActive</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let b of rolelist">
+          <td [ngStyle]="b.IsActive ? {'color': 'green' } : {'color': 'red' }">{{ b.Role }}</td>
+          <td [ngStyle]="b.IsActive ? {'color': 'green' } : {'color': 'red' }">{{ b.IsActive == true ? "Yes" : "No" }}</td>
+        </tr>
+    </tbody>
+</table>
