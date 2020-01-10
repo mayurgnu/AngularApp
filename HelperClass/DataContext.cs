@@ -14,7 +14,7 @@ namespace AngularApp.HelperClass
         /// Declared for to get & set database connnection string
         /// </summary>
         /// <value></value>
-        public string StrDBConn { get; set; }
+        public string Default { get; set; }
 
         /// <summary>
         /// Declared for to get & set logging database connnection string

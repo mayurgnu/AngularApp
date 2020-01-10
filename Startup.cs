@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AngularApp.Data;
+using AngularApp.HelperClass;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
-
 namespace AngularApp
 {
     public class Startup
@@ -25,10 +26,13 @@ namespace AngularApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            // Form [IFormCollection]:'((Microsoft.AspNetCore.Http.DefaultHttpRequest)_HttpContext.Request).Form' threw an exception of type 'System.InvalidOperationException'
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddDbContext<BoonSiewContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddMvc(option => option.EnableEndpointRouting = false);
-            services.AddControllers().AddNewtonsoftJson(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            });
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddCors( options => {
                     options.AddPolicy(
                    "MAYUR", builder => 
@@ -43,10 +47,6 @@ namespace AngularApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
-                //{
-                //    HotModuleReplacement = true
-                //});
             }
             else
             {

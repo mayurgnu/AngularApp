@@ -175,7 +175,7 @@ namespace AngularApp.HelperClass
         /// <returns>returns datatable</returns>
         public DataTable GetDataTable(GridParams oGrid)
         {
-            DatabaseHelper dbHelper = new DatabaseHelper(ConfigurationSettings.DBConnection);
+            DatabaseHelper dbHelper = new DatabaseHelper(ConfigurationSettings.Default);
             dbHelper.AddParameter("@TableName", oGrid.TableName);
             dbHelper.AddParameter("@ColumnsName", oGrid.ColumnsName);
             dbHelper.AddParameter("@SortOrder", GetSortOrder());

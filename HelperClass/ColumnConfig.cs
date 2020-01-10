@@ -18,15 +18,21 @@ namespace AngularApp.HelperClass
             gridParams._HTTPContext = _HTTPContext;
             gridParams.PageNumber = 1;
             gridParams.RecordPerPage = 10;
-            if (mode == "Role")
-            {
-                gridParams.ColumnsName = "RoleId,Role,IsActive";
-                gridParams.SortColumn = "RoleId";
-                gridParams.SortOrder = "desc";
-                gridParams.TableName = "RoleMaster";
-                gridParams.WhereClause = " IsActive=1  ";
-                gridParams.ExportedFileName = "RoleList";
-            }
+            // if (mode == "Role")
+            // {
+            //     gridParams.ColumnsName = "RoleId,Role,IsActive";
+            //     gridParams.SortColumn = "RoleId";
+            //     gridParams.SortOrder = "desc";
+            //     gridParams.TableName = "RoleMaster";
+            //     gridParams.WhereClause = " IsActive=1  ";
+            //     gridParams.ExportedFileName = "RoleList";
+            // }
+            gridParams.ColumnsName = "RoleId,Role,IsActive";
+            gridParams.SortColumn = "RoleId";
+            gridParams.SortOrder = "desc";
+            gridParams.TableName = "RoleMaster";
+            gridParams.WhereClause = " IsActive=1  ";
+            gridParams.ExportedFileName = "RoleList";
         }
     }
 }

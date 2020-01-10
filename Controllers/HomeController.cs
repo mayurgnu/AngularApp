@@ -45,11 +45,11 @@ namespace AngularApp.Controllers
         /// <returns>Returns Data According to Search,Sort and Pagination criteria</returns>
         [HttpPost]
         [Route("GetGridData")]
-        public string GetGridData()
+        public string GetGridData(DataTableParam data)
         {
             try
             {
-                string mode = Convert.ToString(Request.Form["mode"]);
+                string mode = data.Mode;//// Convert.ToString(Request.Form["mode"]);
                 ColumnConfig columnConfig = new ColumnConfig(mode, HttpContext);
                 var aaData =  columnConfig.gridParams.GetData();
                 return aaData;
@@ -60,5 +60,9 @@ namespace AngularApp.Controllers
             }
         }
         #endregion
+    }
+    public class DataTableParam
+    {
+        public string Mode { get; set; }
     }
 }

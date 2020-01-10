@@ -12,14 +12,14 @@ namespace AngularApp.HelperClass
         public static HttpContext HttpContext => new HttpContextAccessor().HttpContext;
 
         /// <summary>
-        /// Getter for DBConnection value mentioned in appsetings.json file in ConnectionStrings section with key = "strDBConn"
+        /// Getter for Default value mentioned in appsetings.json file in ConnectionStrings section with key = "Default"
         /// </summary>
-        public static string DBConnection
+        public static string Default
         {
             get
             {
                 IOptions<ConnectionStrings> _connectionstrings = (IOptions<ConnectionStrings>)HttpContext.RequestServices.GetService(typeof(IOptions<ConnectionStrings>));
-                return _connectionstrings.Value.StrDBConn;
+                return _connectionstrings.Value.Default;
             }
         }
 
