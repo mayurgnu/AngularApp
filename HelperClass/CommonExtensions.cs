@@ -326,12 +326,12 @@ namespace AngularApp.HelperClass
         /// Searializes datatable data using  ConvertToJSON() method in to string and appends additional data to that json string
         /// </summary>
         /// <returns>Returns json string of serialized data of datatable</returns>
-        public static string GetJsonForDataTableJS(this DataTable dt)
+        public static string GetJsonForDataTableJS(this DataTable dt,DataTableAjaxPostModel model)
         {
             StringBuilder sb = new StringBuilder();
             string data = dt.ConvertToJSON();
             sb.Append("{\"data\":").AppendLine(data);
-            sb.Append(",\"draw\":\"").Append(Convert.ToString(HttpContextAccessor.Request.Form["draw"])).Append('\"');
+            sb.Append(",\"draw\":\"").Append(Convert.ToString(model.draw)).Append('\"');
             sb.Append(",\"recordsFiltered\":\"").Append(dt.Rows.Count == 0 ? "0" : dt.Rows[0]["TotalRows"].ToString()).Append('\"');
             sb.Append(",\"recordsTotal\":\"").Append(dt.Rows.Count == 0 ? "0" : dt.Rows[0]["TotalRows"].ToString()).Append("\"}");
             return sb.ToString();

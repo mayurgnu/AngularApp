@@ -35,7 +35,7 @@ namespace AngularApp
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddCors( options => {
                     options.AddPolicy(
-                   "MAYUR", builder => 
+                   "MAYUR", builder =>
                    builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
              });
         }

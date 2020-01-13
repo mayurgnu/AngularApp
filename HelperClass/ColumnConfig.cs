@@ -8,31 +8,23 @@ namespace AngularApp.HelperClass
     public class ColumnConfig
     {
         public GridParams gridParams = new GridParams();
-
         /// <summary>
         /// init grid configuration
         /// </summary>
         /// <param name="mode">keyword for identify grid</param>
-        public ColumnConfig(string mode, HttpContext _HTTPContext, string where = "")
+        public ColumnConfig(DataTableAjaxPostModel model, string where = "")
         {
-            gridParams._HTTPContext = _HTTPContext;
-            gridParams.PageNumber = 1;
-            gridParams.RecordPerPage = 10;
-            // if (mode == "Role")
-            // {
-            //     gridParams.ColumnsName = "RoleId,Role,IsActive";
-            //     gridParams.SortColumn = "RoleId";
-            //     gridParams.SortOrder = "desc";
-            //     gridParams.TableName = "RoleMaster";
-            //     gridParams.WhereClause = " IsActive=1  ";
-            //     gridParams.ExportedFileName = "RoleList";
-            // }
-            gridParams.ColumnsName = "RoleId,Role,IsActive";
-            gridParams.SortColumn = "RoleId";
-            gridParams.SortOrder = "desc";
-            gridParams.TableName = "RoleMaster";
-            gridParams.WhereClause = " IsActive=1  ";
-            gridParams.ExportedFileName = "RoleList";
+            if(model.mode == "Role"){
+                gridParams.AjaxPostModel = model;
+                gridParams.PageNumber = 1;
+                gridParams.RecordPerPage = 10;
+                gridParams.ColumnsName = "RoleId,Role,IsActive,(CASE WHEN IsActive = 1 THEN 'green' else 'red' END) as Clr";
+                gridParams.SortColumn = "RoleId";
+                gridParams.SortOrder = "desc";
+                gridParams.TableName = "RoleMaster";
+                gridParams.WhereClause = " 1=1  ";
+                gridParams.ExportedFileName = "RoleList";
+            }
         }
     }
 }

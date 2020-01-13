@@ -9,10 +9,11 @@ namespace AngularApp.HelperClass
     public class GridFunctions
     {
         private readonly HttpContext _HttpContext;
+        private readonly DataTableAjaxPostModel _AjaxPostModel;
 
-        public GridFunctions(HttpContext httpContext)
+        public GridFunctions(DataTableAjaxPostModel AjaxPostModel)
         {
-            _HttpContext = httpContext;
+            _AjaxPostModel = AjaxPostModel;
         }
 
         /// <summary>
@@ -22,11 +23,11 @@ namespace AngularApp.HelperClass
         public string GetColumns()
         {
             StringBuilder columns = new StringBuilder();
-            for (int i = 0; ; i++)
+            for (int i = 0; i< _AjaxPostModel.columns.Count ; i++)
             {
-                if (!string.IsNullOrEmpty(_HttpContext.Request.Form["columns[" + i + "][data]"]))
+                if (!string.IsNullOrEmpty(_AjaxPostModel.columns[i].data))
                 {
-                    string c = Convert.ToString(_HttpContext.Request.Form["columns[" + i + "][data]"]);
+                    string c = Convert.ToString(_AjaxPostModel.columns[i].data);
                     columns.Append(columns.ToString()?.Length == 0 ? c : "," + c);
                 }
                 else
@@ -34,8 +35,8 @@ namespace AngularApp.HelperClass
                     break;
                 }
             }
-            if (!string.IsNullOrEmpty(_HttpContext.Request.Form["Columns"]))
-                columns.Append(Convert.ToString(_HttpContext.Request.Form["Columns"]));
+            // if (!string.IsNullOrEmpty(_AjaxPostModel.columns))
+            //     columns.Append(Convert.ToString(_HttpContext.Request.Form["Columns"]));
             return columns.ToString();
         }
 
@@ -46,15 +47,15 @@ namespace AngularApp.HelperClass
         /// <returns></returns>
         public string GetSortColumn(string defaultColName)
         {
-            if (!string.IsNullOrEmpty(_HttpContext.Request.Form["order[0][column]"]))
+            if (!string.IsNullOrEmpty(_AjaxPostModel.order[0].column))
             {
-                string index = Convert.ToString(_HttpContext.Request.Form["order[0][column]"]);
-                string ColName = Convert.ToString(_HttpContext.Request.Form["columns[" + index + "][data]"]);
+                string index = Convert.ToString(_AjaxPostModel.order[0].column);
+                string ColName = Convert.ToString(_AjaxPostModel.columns[0].data);
                 if (string.IsNullOrEmpty(ColName))
                 {
                     try
                     {
-                        string[] columns = Convert.ToString(_HttpContext.Request.Form["columns"]).Split(',');
+                        string[] columns = Convert.ToString(_AjaxPostModel.columns).Split(',');
                         if (columns.Length > index.ToInt())
                             ColName = columns[index.ToInt()].Split(" [")[0];
                         else
@@ -65,20 +66,8 @@ namespace AngularApp.HelperClass
                         ColName = defaultColName;
                     }
                 }
-                if (_HttpContext.Request.Form["mode"].ToString() == "TeeTime" && ColName == "OnDate")
-                    return "CONVERT(Date,OnDate,103)";
-                else if (_HttpContext.Request.Form["mode"].ToString() == "RptSchedule" && ColName == "OnDate")
-                    return "CONVERT(Date,OnDate,103)";
-                else if (_HttpContext.Request.Form["mode"].ToString() == "Audit" && ColName == "ChangeDate")
-                    return "ChangeDate1";
-                else if (_HttpContext.Request.Form["mode"].ToString() == "LoginHistory" && ColName == "LoginDate")
-                    return "onDate";
-                else if (_HttpContext.Request.Form["mode"].ToString() == "EmailSubscribers" && ColName == "OnDate")
-                    return "CreatedDate";
-                else if (_HttpContext.Request.Form["mode"].ToString() == "BookingService" && ColName == "OnService")
-                    return "ServiceDate";
-                else if (_HttpContext.Request.Form["mode"].ToString() == "BookingService" && ColName == "BookDate")
-                    return "CreatedDate";
+                // if (_HttpContext.Request.Form["mode"].ToString() == "TeeTime" && ColName == "OnDate")
+                //     return "CONVERT(Date,OnDate,103)";
                 return ColName;
             }
             else
@@ -93,9 +82,9 @@ namespace AngularApp.HelperClass
         /// <returns></returns>
         public string GetSortOrder()
         {
-            if (!string.IsNullOrEmpty(_HttpContext.Request.Form["order[0][dir]"]))
+            if (!string.IsNullOrEmpty(_AjaxPostModel.order[0].dir))
             {
-                string order = Convert.ToString(_HttpContext.Request.Form["order[0][dir]"]);
+                string order = Convert.ToString(_AjaxPostModel.order[0].dir);
                 if (string.IsNullOrEmpty(order))
                     order = "asc";
                 return order;
@@ -114,9 +103,9 @@ namespace AngularApp.HelperClass
         public string GetWhereClause(string w = "")
         {
             string where = w;
-            if (!string.IsNullOrEmpty(_HttpContext.Request.Form["FixClause"]))
+            if (!string.IsNullOrEmpty(_AjaxPostModel.FixClause))
             {
-                string fix = Convert.ToString(_HttpContext.Request.Form["FixClause"]);
+                string fix = Convert.ToString(_AjaxPostModel.FixClause);
 
                 //'%'%' To '%''%' | '%te'st%' To '%te''st%'
                 const string pattern = @"(%)(\w*)(')(\w*)(%)";
@@ -125,9 +114,9 @@ namespace AngularApp.HelperClass
                 if (fix != "")
                     where += where?.Length == 0 ? fix : " AND (" + fix + ")";
             }
-            if (!string.IsNullOrEmpty(_HttpContext.Request.Form["search[value]"]))
+            if (!string.IsNullOrEmpty(_AjaxPostModel.search.value))
             {
-                string val = Convert.ToString(_HttpContext.Request.Form["search[value]"]);
+                string val = Convert.ToString(_AjaxPostModel.search.value);
                 if (val != "")
                 {
                     val = val.Replace("'", "''");
@@ -150,8 +139,8 @@ namespace AngularApp.HelperClass
         /// <returns>returns current page number</returns>
         public int GetPageNumber()
         {
-            if (!string.IsNullOrEmpty(_HttpContext.Request.Form["start"]))
-                return Convert.ToString(_HttpContext.Request.Form["start"])?.Length == 0 ? -1 : Convert.ToInt32(Convert.ToString(_HttpContext.Request.Form["start"]));
+            if (!string.IsNullOrEmpty(_AjaxPostModel.start))
+                return Convert.ToString(_AjaxPostModel.start)?.Length == 0 ? -1 : Convert.ToInt32(Convert.ToString(_AjaxPostModel.start));
             else
                 return 1;
         }
@@ -162,8 +151,8 @@ namespace AngularApp.HelperClass
         /// <returns>returns total no of data as per _HttpContext.Request.Form["length"] parameter</returns>
         public int GetRecordPerPage()
         {
-            if (!string.IsNullOrEmpty(_HttpContext.Request.Form["length"]))
-                return Convert.ToInt32(Convert.ToString(_HttpContext.Request.Form["length"]));
+            if (!string.IsNullOrEmpty(_AjaxPostModel.length))
+                return Convert.ToInt32(Convert.ToString(_AjaxPostModel.length));
             else
                 return 10;
         }
@@ -193,10 +182,10 @@ namespace AngularApp.HelperClass
         /// </summary>
         /// <param name="oGrid">grid configuration object</param>
         /// <returns>retuns datatable as json response</returns>
-        public string GetJson(GridParams oGrid)
+        public string GetJson(GridParams oGrid,DataTableAjaxPostModel AjaxPostModel)
         {
             DataTable dt = GetDataTable(oGrid);
-            return dt.GetJsonForDataTableJS();
+            return dt.GetJsonForDataTableJS(AjaxPostModel);
         }
 
         /// <summary>

@@ -8,16 +8,16 @@ export class RoleService {
   constructor(private http: HttpClient) { }
 
   getRoles(){
-   return this.http.get(environment.apiUrl +'api/home/Roles').map(res => 
+   return this.http.get(environment.apiUrl +'home/Roles').map(res => 
     { return res });
   }
-  //create(bookstore:any){
-  //  return this.http.get('/api/bookstores', bookstore)
-  //    .map(res => res.json());
-  //}
-  //update(bookstore:any){
-  //  return this.http.put('/api/bookstores/' + bookstore.id, bookstore)
-  //    .map(res => res.json());
+  create(model:any){
+   return this.http.post(environment.apiUrl +'home/ManageRole', model)
+     .map(res => res);
+  }
+  //update(model:any){
+  // return this.http.put(environment.apiUrl +'home/ManageRole', model)
+  //   .map(res => res);
   //}
   //delete(id:any){
   //  return this.http.delete('/api/bookstores/' + id)

@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AngularApp.Data;
 using AngularApp.HelperClass;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using AngularApp.HelperClass;
+using Microsoft.EntityFrameworkCore;
 
 namespace AngularApp.Controllers
 {
@@ -16,8 +19,6 @@ namespace AngularApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly BoonSiewContext _context;
-
-
         public HomeController(ILogger<HomeController> logger,BoonSiewContext context)
         {
             _context = context;
@@ -45,24 +46,82 @@ namespace AngularApp.Controllers
         /// <returns>Returns Data According to Search,Sort and Pagination criteria</returns>
         [HttpPost]
         [Route("GetGridData")]
-        public string GetGridData(DataTableParam data)
+        public string GetGridData(DataTableAjaxPostModel model)
         {
             try
             {
-                string mode = data.Mode;//// Convert.ToString(Request.Form["mode"]);
-                ColumnConfig columnConfig = new ColumnConfig(mode, HttpContext);
+                //string mode = data.draw;//// Convert.ToString(Request.Form["mode"]);
+                ColumnConfig columnConfig = new ColumnConfig(model);
                 var aaData =  columnConfig.gridParams.GetData();
                 return aaData;
             }
             catch (Exception ex)
             {
-                throw ex;
+                return ex.ToString();
             }
         }
         #endregion
+
+
+        /// <summary>
+        /// To save new or update existing role records
+        /// </summary>
+        /// <typeparamref name="model">role object posted from client will bounded to model</typeparamref>
+        /// <returns>Returns json result with success = true or false and ReturnMsg and (ManageRole.cshtml as partialview if there is an error failure)</returns>
+        [HttpPost]
+        [Route("ManageRole")]
+        public IActionResult ManageRole(RoleMaster model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    model.IsActive = true;
+                    if (model.RoleId == 0)
+                    {
+                        if (_context.RoleMaster.Where(x => x.Role.Trim() == model.Role.Trim() && x.IsActive).Count() == 0)
+                        {
+                            _context.Add(model);
+                            _context.SaveChanges();
+                            return Ok(new { success = "true", ReturnMsg = "Role saved successfully."});
+                        }
+                        else
+                        {
+                            return Ok(new { success = "false", ReturnMsg = "Role already exist."});
+                        }
+                    }
+                    else
+                    {
+                        if (_context.RoleMaster.Where(x => x.RoleId != model.RoleId &&  x.Role.Trim() == model.Role.Trim() && x.IsActive).ToList().Count() == 0)
+                        {
+                            _context.Entry(model).State = EntityState.Modified;
+                            _context.SaveChanges();
+                            return Ok(new { success = "true", ReturnMsg = "Role updated successfully.", PartialviewContent = "" });
+                        }
+                        else
+                        {
+                            return Ok(new { success = "false", ReturnMsg = "Role already exist."});
+                        }
+                    }
+                }
+                else
+                {
+                    string _message = string.Join(Environment.NewLine, ModelState.Values
+                                               .SelectMany(x => x.Errors)
+                                               .Select(x => x.ErrorMessage));
+                    return Ok(new { success = "false", ReturnMsg = _message});
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { success = "false", ReturnMsg = ex.Message});
+            }
+        }
     }
     public class DataTableParam
     {
         public string Mode { get; set; }
+        public string SortDirection { get; set; }
+
     }
 }

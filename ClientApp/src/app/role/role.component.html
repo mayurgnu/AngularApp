@@ -1,16 +1,31 @@
 <h2>Role</h2>
+<button (click)="openModal()">Create New Role</button>
 <hr>
 <table datatable [dtOptions]="dtOptions" class="row-border hover">
-    <thead>
-      <tr>
-          <th>RoleName</th>
-          <th>Active/InActive</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let b of rolelist">
-          <td [ngStyle]="b.IsActive ? {'color': 'green' } : {'color': 'red' }">{{ b.Role }}</td>
-          <td [ngStyle]="b.IsActive ? {'color': 'green' } : {'color': 'red' }">{{ b.IsActive == true ? "Yes" : "No" }}</td>
-        </tr>
-    </tbody>
 </table>
+<modal #myModal>
+    <modal-header>
+    Manage Role.
+    </modal-header>
+    <modal-content>
+      <form [formGroup]="roleForm" novalidate (submit)="onSubmit()">
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Role <span class="text-danger">*</span>:</label>
+                <input type="hidden" formControlName="RoleId"/>
+                <input type="text" formControlName="Role"/>
+                <span class="text-danger" asp-validation-for="Role"></span>
+            </div>
+            <div *ngIf="roleForm.controls['Role'].invalid && (roleForm.controls['Role'].dirty || roleForm.controls['Role'].touched)" class="alert alert-danger">
+                <div *ngIf="roleForm.controls['Role'].errors.required">
+                  Role is required.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" [disabled]="roleForm.invalid" >Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Close</button>
+        </div>
+      </form>
+    </modal-content>
+</modal>

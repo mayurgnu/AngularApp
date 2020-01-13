@@ -6,6 +6,8 @@ namespace AngularApp.HelperClass
     public class GridParams
     {
         public HttpContext _HTTPContext;
+        public DataTableAjaxPostModel AjaxPostModel;
+
 
         /// <summary>
         /// name of table. incase of join (tblA inner join tblB ON tblA.columnA=tblB.columnB)
@@ -58,8 +60,8 @@ namespace AngularApp.HelperClass
         /// <returns>return json as a datatable response</returns>
         public string GetData()
         {
-            GridFunctions oGrid = new GridFunctions(_HTTPContext);
-            return oGrid.GetJson(this);
+            GridFunctions oGrid = new GridFunctions(AjaxPostModel);
+            return oGrid.GetJson(this,AjaxPostModel);
         }
 
         /// <summary>
@@ -68,7 +70,7 @@ namespace AngularApp.HelperClass
         /// <returns>return datatable as response</returns>
         public DataTable GetDataTable()
         {
-            GridFunctions oGrid = new GridFunctions(_HTTPContext);
+            GridFunctions oGrid = new GridFunctions(AjaxPostModel);
             return oGrid.GetDataTable(this);
         }
 
@@ -78,7 +80,7 @@ namespace AngularApp.HelperClass
         /// </summary>
         public void ExportData()
         {
-            GridFunctions oGrid = new GridFunctions(_HTTPContext);
+            GridFunctions oGrid = new GridFunctions(AjaxPostModel);
             oGrid.Export(this);
         }
     }
