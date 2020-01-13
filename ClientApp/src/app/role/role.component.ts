@@ -48,7 +48,7 @@ export class RoleComponent implements OnInit {
   }
   createForm() {
     this.roleForm = this.fb.group({
-      RoleId:[3002],
+      RoleId:[0],
       Role: ['', Validators.required ]
     });
   }
@@ -105,6 +105,7 @@ export class RoleComponent implements OnInit {
 
   // Open Modal
   openModal(){
+      this.createForm();
       this.modalRef = this.modalService.open(this.myModal, {
           size: "md",
           modalClass: 'mymodal',
