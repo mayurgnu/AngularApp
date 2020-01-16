@@ -1,0 +1,39 @@
+Note** Run all angular cli commands inside the folder where angular cli project (this e2e,src,folder exists.)exists.
+ex:-for this project follow following steps using cmd or vs code terminal.
+1).using command :- cd D:\  
+2).now move to cli project folder using command :- cd D:\AngularApp\ClientApp
+3).Run all the required angular related commands to this dierectory.
+=>npm install  
+--To install angular cli.  
+
+=>npm install --save-dev @angular/cli@latest
+--To install latest angular cli.Install the dependencies in the local node_modules folder.
+
+=>npm uninstall
+--To uninstall angular cli.
+
+=>npm update
+--This command will update all the packages listed to the latest version
+
+=>npm audit fix 
+--To fix vulnerabilities found during installation.
+
+=>npm install angular-datatables
+=>ex:-npm install package-name
+--To install package from node_module. 
+
+=>npm uninstall angular-datatables
+=>ex:-npm uninstall package-name
+--To uninstall package from node_module.
+
+***********Genrate component****************
+--To genrate component to specific module.
+1).without moving to dierectory of module in which you want to create component
+=>ng generate c sample module=module-name
+=>ex :- ng generate c sample module=app.module.ts 
+Or,
+2).move to dierectory of module in which you want to create component
+=>cd D:\AngularApp\ClientApp\modulename
+=>ng generate c sample
+***********Genrate component****************
+    

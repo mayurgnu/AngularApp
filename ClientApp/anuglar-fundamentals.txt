@@ -1,0 +1,5 @@
+--https://jasonwatmore.com/post/2019/06/15/angular-8-template-driven-forms-validation-example
+
+--Angular provides a mechanism called DOM queries. It comes in a form of @ViewChild and @ViewChildren decorators
+1).@ViewChild :- returns one reference 
+2).@ViewChildren :- returns multiple references as a QueryList object

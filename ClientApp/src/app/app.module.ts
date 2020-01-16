@@ -13,6 +13,7 @@ import { RoleComponent } from './role/role.component';
 import { DataTablesModule } from 'angular-datatables';
 import { ModalModule } from 'ngb-modal';
 import { CommonModule } from '@angular/common';
+import { DynamicDataTableComponent } from './dynamic-data-table/dynamic-data-table.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +21,8 @@ import { CommonModule } from '@angular/common';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    RoleComponent
+    RoleComponent,
+    DynamicDataTableComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -35,7 +37,7 @@ import { CommonModule } from '@angular/common';
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
       { path: 'role', component: RoleComponent },
-
+      { path: 'datatable', component: DynamicDataTableComponent }
     ])
   ],
   providers: [],

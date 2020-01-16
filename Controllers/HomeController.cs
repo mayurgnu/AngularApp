@@ -31,6 +31,13 @@ namespace AngularApp.Controllers
         {
             return _context.RoleMaster.ToList();
         }
+        [HttpGet]
+        [Route("RoleById/{id}")]
+        public RoleMaster GetRoleById(int id=0)
+        {
+            var obj = _context.RoleMaster.FirstOrDefault(x=>x.RoleId == id);
+            return obj;
+        }
 
         [HttpPost]
         [Route("GetRoles")]

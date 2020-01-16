@@ -11,6 +11,10 @@ export class RoleService {
    return this.http.get(environment.apiUrl +'home/Roles').map(res => 
     { return res });
   }
+  getRoleById(id:string){
+  return this.http.get(environment.apiUrl +'home/RoleById/'+id).map(res => 
+    { return res });
+  }
   create(model:any){
    return this.http.post(environment.apiUrl +'home/ManageRole', model)
      .map(res => res);
