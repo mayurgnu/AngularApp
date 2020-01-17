@@ -5,14 +5,14 @@ import { environment } from 'src/environments/environment';
 import { ModalManager } from 'ngb-modal';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 
-
 @Component({
-  selector: 'app-dynamic-data-table',
-  templateUrl: './dynamic-data-table.component.html',
-  styleUrls: ['./dynamic-data-table.component.css'],
-  providers: [RoleService]
-})
-export class DynamicDataTableComponent {
+    selector: 'app-dynamic-data-table',
+    templateUrl: './dynamic-data-table.component.html',
+    styleUrls: ['./dynamic-data-table.component.css'],
+    providers: [RoleService]
+  })
+
+export class DynamicDataTableComponent implements OnInit {
   @ViewChild('myModal',null) myModal;
   private modalRef;
 
@@ -58,12 +58,12 @@ export class DynamicDataTableComponent {
       this.roleForm.get('Role').setValue(resp.Role);
       // this.roleForm.setValue(resp);
       this.openModal();
-    });
+  });
   }
   ////datatable table server side 
   ngOnInit() {
     $("#tblRole").on("click",".role-edit", function(event){
-      that.fnEditRole($(this).attr('data-id'));
+      this.fnEditRole($(this).attr('data-id'));
     });
     const that = this;
     this.settings = $.extend({}, this.defaults, this.dtOptions);
@@ -75,7 +75,7 @@ export class DynamicDataTableComponent {
       serverSide: true,
       processing: true,
       ajax: (dataTablesParameters: any, callback,) => {
-            that.httpClient.post<DataTablesResponse>(
+            this.httpClient.post<DataTablesResponse>(
              environment.apiUrl +'home/GetGridData',Object.assign(dataTablesParameters,this.settings),
              {}).subscribe(resp => {
              callback({

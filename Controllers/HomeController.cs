@@ -57,7 +57,6 @@ namespace AngularApp.Controllers
         {
             try
             {
-                //string mode = data.draw;//// Convert.ToString(Request.Form["mode"]);
                 ColumnConfig columnConfig = new ColumnConfig(model);
                 var aaData =  columnConfig.gridParams.GetData();
                 return aaData;
@@ -122,6 +121,36 @@ namespace AngularApp.Controllers
             catch (Exception ex)
             {
                 return Ok(new { success = "false", ReturnMsg = ex.Message});
+            }
+        }
+
+        /// <summary>
+        /// To soft delete role 
+        /// </summary>
+        /// <param name="Id">Id of role to be delete</param>
+        /// <returns>Returns json result with success = true or false and ReturnMsg</returns>
+        [HttpDelete]
+        [Route("DeleteRole/{id}")]
+        public IActionResult DeleteRole(int id = 0)
+        {
+            try
+            {
+                RoleMaster objAdmin = _context.RoleMaster.FirstOrDefault(x => x.RoleId == id);
+                if (objAdmin != null)
+                {
+                    objAdmin.IsActive = false;
+                    _context.Entry(objAdmin).State = EntityState.Modified;
+                    _context.SaveChanges();
+                    return Ok(new { success = "true", ReturnMsg = "Role deleted successfully.", PartialviewContent = "" });
+                }
+                else
+                {
+                    return Ok(new { success = "false", ReturnMsg = "Role does not exist."});
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { success = "false", ReturnMsg = ex});
             }
         }
     }

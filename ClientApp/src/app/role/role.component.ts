@@ -4,7 +4,8 @@ import { HttpClient, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ModalManager } from 'ngb-modal';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
-
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
 
 
 @Component({
@@ -13,14 +14,16 @@ import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms'
   styleUrls: ['./role.component.css'],
   providers: [RoleService]
 })
-
-export class RoleComponent implements OnInit {
+export class RoleComponent {
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective;
+  
   @ViewChild('myModal',null) myModal;
   private modalRef;
 
   settings;
-  dataTableUrl = environment.apiUrl +'api/home/GetGridData';
-  dataTableExportUrl = environment.apiUrl +'api/home/GetGridData';
+  dataTableUrl = environment.apiUrl +'home/GetGridData';
+  dataTableExportUrl = environment.apiUrl +'home/GetGridData';
   ////Datatable Configurations Start
   fnAdd(){}
   fnDelete(){}
@@ -41,6 +44,25 @@ export class RoleComponent implements OnInit {
     DrawCallback: this.fn_drawCallback, RowCallback: this.fn_rowCallback };
 
   dtOptions: DataTables.Settings = {}
+  dtTrigger = new Subject();
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next();
+  }
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+    });
+  }
+
+
   ////Datatable Configurations End
   roleForm: FormGroup;
   constructor(private RoleService: RoleService,private httpClient: HttpClient,private modalService: ModalManager,private fb: FormBuilder){
@@ -60,25 +82,32 @@ export class RoleComponent implements OnInit {
       this.roleForm.get('Role').setValue(resp.Role);
       // this.roleForm.setValue(resp);
       this.openModal();
-  });
+    });
   }
   ////datatable table server side 
   ngOnInit() {
-    $("#tblRole").on("click",".role-edit", function(event){
-      this.fnEditRole($(this).attr('data-id'));
-    });
     const that = this;
+    $("#tblRole").on("click",".role-edit", function(event){
+      that.fnEditRole($(this).attr('data-id'));
+    });
+    $("#tblRole").on("click",".role-delete", function(event){
+      that.fnDeleteRole($(this).attr('data-id'));
+    });
+    this.GlobalBindGrid();
+  }
+  GlobalBindGrid(){
+    debugger
     this.settings = $.extend({}, this.defaults, this.dtOptions);
     this.settings.mode = "Role";
     this.settings.FixClause = "(IsActive = IsActive)";
     this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 2,
+      pagingType: 'simple_numbers',
+      pageLength: 3,
       serverSide: true,
       processing: true,
       ajax: (dataTablesParameters: any, callback,) => {
-            this.httpClient.post<DataTablesResponse>(
-             environment.apiUrl +'home/GetGridData',Object.assign(dataTablesParameters,this.settings),
+        this.httpClient.post<DataTablesResponse>(
+             this.defaults.Url,Object.assign(dataTablesParameters,this.settings),
              {}).subscribe(resp => {
              callback({
                recordsTotal: resp.recordsTotal,
@@ -114,49 +143,46 @@ export class RoleComponent implements OnInit {
         } ]
     };
   }
+
   // Open Modal
   openModal(){
-      this.modalRef = this.modalService.open(this.myModal, {
-          size: "md",
-          modalClass: 'mymodal',
-          hideCloseButton: false,
-          centered: false,
-          backdrop: true,
-          animation: true,
-          keyboard: false,
-          closeOnOutsideClick: true,
-          backdropClass: "modal-backdrop"
-      })
-  }
-  // Close Modal
-  closeModal(){
-      this.modalService.close(this.modalRef);
-      this.createForm();
-      //or this.modalRef.close();
-  }
+    this.modalRef = this.modalService.open(this.myModal, {
+        size: "md",
+        modalClass: 'mymodal',
+        hideCloseButton: false,
+        centered: false,
+        backdrop: 'static',
+        animation: true,
+        keyboard: false,
+        closeOnOutsideClick: true,
+        backdropClass: "modal-backdrop"
+    })
+}
+// Close Modal
+closeModal(){
+    this.modalService.close(this.modalRef);
+    this.createForm();
+    //or this.modalRef.close();
+}
 
   //Submit
   onSubmit(): void {
     if(this.roleForm.valid){
-      this.RoleService.create(this.roleForm.value).subscribe( resp => { this.closeModal(); });
+      this.RoleService.create(this.roleForm.value).subscribe( resp => { 
+        this.closeModal();
+        alert('Record saved successfully.');
+        this.rerender(); 
+      });
     }
   }
-  // fnSave() {
-  //   if (this.roleForm.RoleId === 0) {
-  //   this.RoleService.create(this.product).pipe().subscribe(data => {
-  //   console.log(this.data);
-  //   this.fnGetData();
-  //   alert('Record inserted successfully.');
-  //   });
-  //   } else {
-  //   this.testService.putData(this.product).pipe().subscribe(data => {
-  //   console.log(this.data);
-  //   this.divTableShow = true;
-  //     this.fnGetData();
-  //     alert('Record updated successfully.');
-  //     });
-  //   }
-  // }
+  //Delete
+  fnDeleteRole (id:string): void {
+    if(confirm("Are you sure, you want to delete?")){
+      this.RoleService.delete(id).subscribe( resp => { 
+        this.rerender(); 
+      });
+    }
+  }
 }
 class DataTablesResponse {
   data: any[];

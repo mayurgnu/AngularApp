@@ -1,10 +1,13 @@
 <h2>Role</h2>
 <!-- <span #tref>View child example</span> -->
-<button (click)="openModal()" class="cc">Create New Role</button>
+<button (click)="openModal()">Create New Role</button>&nbsp;
+<button type="button" (click)="rerender()">
+  Rerender
+</button>
 
 
 <hr>
-<table id="tblRole" datatable [dtOptions]="dtOptions" class="row-border hover">
+<table id="tblRole" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered">
 </table>
 <modal #myModal>
     <modal-header>

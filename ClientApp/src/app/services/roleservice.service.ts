@@ -23,13 +23,8 @@ export class RoleService {
   // return this.http.put(environment.apiUrl +'home/ManageRole', model)
   //   .map(res => res);
   //}
-  //delete(id:any){
-  //  return this.http.delete('/api/bookstores/' + id)
-  //    .map(res => res.json());
-  //}
-  //getBookstores()
-  //{
-  //  return this.http.get('/api/bookstores')
-  //    .map(res => res.json());
-  //}
+  delete(id:any){
+   return this.http.delete(environment.apiUrl +'home/DeleteRole/'+id).map(res => 
+    { return res });
+  }
 }
