@@ -28,7 +28,7 @@
     "core-js": "^3.6.2",
     "datatables.net": "^1.10.20",
     "datatables.net-dt": "^1.10.20",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "ngb-modal": "^2.0.3",
     "oidc-client": "^1.10.1",
     "popper.js": "^1.16.0",
